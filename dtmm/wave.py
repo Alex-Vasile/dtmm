@@ -62,23 +62,26 @@ def betaxy(shape, k0, out = None):
     l = (2 * np.pi / k0)
     return np.multiply(l,xx, out = out[0]), np.multiply(l,yy, out = out[1])
 
-def k0(wavelength, pixelsize = 1.):
-    """Calculate wave number in vacuum from a given wavelength and pixelsize
+
+def k0(wavelength, pixel_size=1.):
+    """
+    Calculate wave number in vacuum from a given wavelength and pixelsize
     
     Parameters
     ----------
     wavelength : float or array of floats
         Wavelength in nm
-    pixelsize: float
-        Pixelsize in nm
+    pixel_size: float
+        Pixel size in nm
     
     Returns
     -------
-    array
+    out : float or array of floats
         Wavenumber array     
     """
-    out = 2*np.pi/np.asarray(wavelength) * pixelsize
-    return np.asarray(out, dtype = FDTYPE)
+    out = 2 * np.pi / np.asarray(wavelength) * pixel_size
+    return np.asarray(out, dtype=FDTYPE)
+
 
 def eigenwave(shape, i, j, amplitude = None, out = None):
     """Returns a planewave with a given fourier coefficient indices i and j. 
