@@ -80,25 +80,25 @@ def field_viewer(field_data, cmf=None, bulk_data=False, n=1., mode=None,
     ----------
     field_data : tuple[np.ndarray]
         Input field data
-    cmf : str, ndarray or None, optional
+    cmf : str, ndarray, optional
         Color matching function (table). If provided as an array, it must match 
         input field wavelengths. If provided as a string, it must match one of 
         available CMF names or be a valid path to tabulated data. See load_tcmf.
     bulk_data: bool
         # TODO: I don't know what this value is
-    n : float, optional
+    n : float
         Refractive index of the output material.
-    mode : [ 't' | 'r' | None], optional
+    mode : str, optional
         Viewer mode 't' for transmission mode, 'r' for reflection mode None for
         as is data (no projection calculation - default).
     window : ndarray, optional
         Window function by which the calculated field is multiplied. This can 
         be used for removing artefact from the boundaries.
-    diffraction : bool, optional
+    diffraction : bool
         Specifies whether field is treated as diffractive field or not (if it
         was calculated by diffraction > 0 algorithm or not). If set to False
         refocusing is disabled.
-    polarization_mode : str, optional
+    polarization_mode : str
         Defines polarization mode. That is, how the polarization of the light is
         treated after passing the analyzer. By default, polarizer is applied
         in real space (`mode`) which is good for normal (or mostly normal) 
@@ -120,9 +120,9 @@ def field_viewer(field_data, cmf=None, bulk_data=False, n=1., mode=None,
     # Valid polarization modes
     valid_polarization_modes = ("mode", "normal")
     # Extract components out of field_data
-    field, wavelengths, pixelsize = field_data
+    field, wavelengths, pixel_size = field_data
     # Convert wavelengths and pixel size to wave numbers
-    wave_numbers = k0(wavelengths, pixelsize)
+    wave_numbers = k0(wavelengths, pixel_size)
     
     if not diffraction and mode is not None:
         import warnings
@@ -145,7 +145,7 @@ def field_viewer(field_data, cmf=None, bulk_data=False, n=1., mode=None,
 
         viewer = FieldViewer(field, wave_numbers, cmf, mode=mode, n=n,
                              window=window, diffraction=diffraction,
-                             polarization=polarization_mode, betamax=betamax)
+                             polarization_mode=polarization_mode, betamax=betamax)
         
         viewer.set_parameters(**parameters)
     else:
@@ -155,7 +155,7 @@ def field_viewer(field_data, cmf=None, bulk_data=False, n=1., mode=None,
         parameters.setdefault("focus", 0)
         viewer = BulkViewer(field, wave_numbers, cmf, mode=mode, n=n,
                             window=window, diffraction=diffraction,
-                            polarization=polarization_mode, betamax=betamax)
+                            polarization_mode=polarization_mode, betamax=betamax)
         viewer.set_parameters(**parameters)        
     return viewer
 
