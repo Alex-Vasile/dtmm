@@ -177,8 +177,10 @@ def _float_or_none(value):
     return float(value) if value is not None else None
  
 
-class FieldViewer(object): 
-    """Base viewer"""  
+class FieldViewer(object):
+    """
+    Base viewer
+    """
     _updated_parameters = set()
     _focus = None
     _polarizer = None
@@ -192,14 +194,47 @@ class FieldViewer(object):
     gamma = True
     gray = False
     
-    def __init__(self,field,ks,cmf, mode = None,n = 1., polarization = "normal",
-                window = None, diffraction = True, betamax = BETAMAX):
+    def __init__(self, field, ks, cmf, mode=None, n=1., polarization_mode="normal",
+                 window=None, diffraction=True, betamax=BETAMAX):
+        """
+
+        Parameters
+        ----------
+        field : ndarray
+            Illumination field data to display. 
+        ks : ndarray
+            Wavenumber for each wavelength being simulated.
+        cmf : ndarray
+            Color matching function
+        mode : str, optional
+            Viewer mode 't' for transmission mode, 'r' for reflection mode None for
+            as is data (no projection calculation - default).
+        n: float
+            Refractive index of the output material.
+        polarization_mode : str
+            Defines polarization mode. That is, how the polarization of the light is
+            treated after passing the analyzer. By default, polarizer is applied
+            in real space (`mode`) which is good for normal (or mostly normal)
+            incidence light. You can use `mode` instead of `normal` for more
+            accurate, but slower computation. Here polarizers are applied to
+            mode coefficients in fft space.
+        window : ndarray
+            Window function by which the calculated field is multiplied. This can
+            be used for removing artefact from the boundaries.
+        diffraction : bool
+            Specifies whether field is treated as diffractive field or not (if it
+            was calculated by diffraction > 0 algorithm or not). If set to False
+            refocusing is disabled.
+        betamax : float
+            Betamax parameter used in the diffraction calculation function. With this
+            you can simulate finite NA of the microscope (NA = betamax).
+        """
         self.betamax = betamax
         self.diffraction = diffraction
-        self.pmode = polarization
+        self.pmode = polarization_mode
         self.mode = mode  
-        self.epsv = refind2eps([n,n,n])
-        self.epsa = np.array([0.,0.,0.])
+        self.epsv = refind2eps([n, n, n])
+        self.epsa = np.array([0., 0., 0.])
         self.ks = ks
         self.ifield = field 
         self._ffield = None
