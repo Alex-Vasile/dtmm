@@ -249,21 +249,37 @@ class FieldViewer(object):
     @property
     def _default_fmax(self):
         return self.focus + 100    
-    
-    @property
-    def focus(self):
-        """Focus position, relative to the calculated field position."""
-        return self._focus   
-    
+
     @property
     def ffield(self):
         if self._ffield is None:
             self._ffield = fft2(self.ifield)
         return self._ffield
 
+    @property
+    def focus(self):
+        """
+        Set the focus position, relative to the calculated field position.
+
+        Returns
+        -------
+        self._focus : float, optional
+            Focus position, relative to the calculated field position.
+        """
+        return self._focus
+
     @focus.setter     
     def focus(self, z):
-        if self.diffraction == True or z is None:
+        """
+        Get the focus position, relative to the calculated field position.
+
+        Parameters
+        ----------
+        z : float, optional
+            Focus position, relative to the calculated field position.
+        """
+        # TODO: This check doesn
+        if self.diffraction or z is None:
             self._focus = _float_or_none(z)
             self._updated_parameters.add("focus")
         else:
@@ -271,21 +287,51 @@ class FieldViewer(object):
 
     @property
     def sample(self):
-        """Sample rotation angle."""
+        """
+        Get sample rotation angle.
+
+        Returns
+        -------
+        self._sample: float, optional
+            Sample rotation angle.
+        """
         return self._sample
     
     @sample.setter    
     def sample(self, angle):
+        """
+        Set sample rotation angle.
+
+        Parameters
+        ----------
+        angle : float, optional
+            Sample rotation angle.
+        """
         self._sample = _float_or_none(angle)
         self._updated_parameters.add("sample")   
 
     @property
     def polarizer(self):
-        """Polarizer rotation angle."""
+        """
+        Get polarizer rotation angle.
+
+        Returns
+        -------
+        self._polarizer : float
+            Polarizer rotation angle.
+        """
         return self._polarizer
         
     @polarizer.setter 
     def polarizer(self, angle):
+        """
+        Set polarizer rotation angle.
+
+        Parameters
+        ----------
+        angle : float, optional
+            Polarizer rotation angle.
+        """
         if angle is not None and self.ifield.ndim >= 5 and self.ifield.shape[-5] != 2:
             raise ValueError("Cannot set polarizer. Incompatible field shape.")
         self._polarizer = _float_or_none(angle)
@@ -293,35 +339,75 @@ class FieldViewer(object):
         
     @property
     def analyzer(self):
-        """Analyzer angle"""
+        """
+        Get analyzer angle.
+
+        Returns
+        -------
+        self._analyzer : float, optional
+            Analyzer angle.
+        """
         return self._analyzer    
         
     @analyzer.setter   
     def analyzer(self, angle):
+        """
+        Set analyzer angle.
+
+        Parameters
+        ----------
+        angle : float, optional
+            Analyzer angle.
+        """
         self._analyzer = _float_or_none(angle)
         self._updated_parameters.add("analyzer")
         
     @property
     def intensity(self):
-        """Input light intensity"""
-        return self._intensity   
-    
-    @intensity.setter   
+        """
+        Get input light intensity.
+
+        Returns
+        -------
+        self._intensity : float, optional
+             Input light intensity.
+        """
+        return self._intensity
+
+    @intensity.setter
     def intensity(self, intensity):
+        """
+        Set input light intensity
+
+        Parameters
+        ----------
+        intensity : float, optional
+             Input light intensity.
+        """
         self._intensity = _float_or_none(intensity)
         self._updated_parameters.add("intensity")
         
     def set_parameters(self, **kwargs):
-        """Sets viewer parameters. Any of the :attr:`.VIEWER_PARAMETERS`
+        """
+        Sets viewer parameters. Any of the :attr:`.VIEWER_PARAMETERS`
         """
         for key, value in kwargs.items():
             if key in self._parameters:
                 setattr(self, key, value) 
             else:
                 raise TypeError("Unexpected keyword argument '{}'".format(key))
+
     def get_parameters(self):
-        """Returns viewer parameters as dict"""
-        return {name : getattr(self,name) for name in VIEWER_PARAMETERS}
+        """
+        Returns viewer parameters as dict
+
+        Returns
+        -------
+        out : Dict[str, float]
+
+        """
+        out = {name: getattr(self, name) for name in VIEWER_PARAMETERS}
+        return out
         
     def plot(self, ax=None, show_sliders=True, **kwargs):
         """
